@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M-PESA Payment</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      background:  #fff3cc;
+      width: 95%;
+      max-width: 350px;
+      margin: 20px auto;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 100%;
+      background-color: #e0e0e0;
+    }
+
+    .progress-line::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 50%;
+      background-color: #007bff;
+      animation: progress-animation 2s ease-in-out infinite;
+    }
+
+    @keyframes progress-animation {
+      0% {
+        left: -50%;
+        width: 50%;
+      }
+      100% {
+        left: 100%;
+        width: 50%;
+      }
+    }
+    .progress-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 100%;
+      background-color: #e0e0e0;
+      overflow: hidden;
+    }
+
+    .progress-bar::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 50%;
+      background-color: #007bff;
+      animation: progress-animation 2s ease-in-out infinite;
+    }
+
+    @keyframes progress-animation {
+      0% {
+        left: -50%;
+        width: 50%;
+      }
+      100% {
+        left: 100%;
+        width: 50%;
+      }
+    }
+    .title {
+      font-size: clamp(18px, 5vw, 20px);
+      font-weight: bold;
+      color: #d17500;
+      margin-top: 5px;
+    }
+
+    .premium {
+      font-size: clamp(12px, 4vw, 14px);
+      color: #d17500;
+    }
+
+    .steps {
+      margin-top: 15px;
+    }
+
+    .step {
+      margin: 12px 0;
+      font-size: clamp(14px, 4vw, 16px);
+    }
+
+    .step span {
+      font-weight: bold;
+      color: #ff9900;
+      margin-right: 8px;
+      font-size: clamp(16px, 5vw, 18px);
+    }
+
+    .till-box-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .till-box {
+      background-color: #f7f7f7;
+      padding: 12px;
+      border-radius: 5px;
+      font-weight: bold;
+      flex-grow: 1;
+    }
+
+    .copy-btn {
+      background-color: #eee;
+      border: none;
+      padding: 10px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      min-width: 44px;
+      min-height: 44px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 90px;
+      margin-top: 10px;
+      padding: 12px;
+      font-size: 14px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      resize: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .button {
+      background-color: #fdbd42;
+      color: white;
+      border: none;
+      padding: 14px;
+      width: 100%;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 10px;
+      margin-top: 15px;
+      cursor: pointer;
+      min-height: 48px;
+    }
+
+    .paste-btn {
+      background-color: #d9d9d9;
+      border: none;
+      padding: 12px;
+      border-radius: 5px;
+      margin-top: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100%;
+      min-height: 44px;
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      touch-action: manipulation;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 300px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
+
+    .modal-button {
+      background-color: #fdbd42;
+      color: white;
+      border: none;
+      padding: 12px;
+      margin-top: 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+      min-height: 44px;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="progress-bar"></div>
+    <div class="title">Pay KES 250.00 <span class="premium">(Premium)</span></div>
+    <div class="steps">
+      <div class="step"><span>①</span>Go to M-PESA</div>
+      <div class="step"><span>②</span>Select "Lipa na M-PESA" > "Buy Goods"</div>
+      <div class="step"><span>③</span>Enter Till 
+        <div class="till-box-container">
+          <div id="till-number" class="till-box">Loading...</div>
+          <button class="copy-btn" onclick="copyTill()">📋 Copy</button>
+        </div>
+      </div>
+      <div class="step"><span>④</span>Enter Amount: KES 250.00</div>
+      <div class="step"><span>⑤</span>Enter PIN & Confirm</div>
+    </div>
+    <label for="mpesa-msg" style="margin-top:15px;display:block;font-weight:bold;">Paste M-PESA Message</label>
+    <textarea id="mpesa-msg" placeholder="Paste your M-PESA message here..."></textarea>
+    <button class="paste-btn" onclick="pasteMpesaMessage()">Paste from Clipboard</button>
+    <button class="button" onclick="validatePayment()">Validate Payment</button>
+  </div>
+
+  <!-- Modal for showing messages -->
+  <div id="messageModal" class="modal">
+    <div class="modal-content">
+      <p id="modalMessage"></p>
+      <button class="modal-button" onclick="closeModal()">OK</button>
+    </div>
+  </div>
+
+  <script>
+    // Fetch the current till number from server
+    async function fetchTillNumber() {
+      try {
+        // Show loading state
+        document.getElementById("till-number").textContent = "Loading...";
+        
+        const response = await fetch('get_till.php');
+        const data = await response.json();
+        
+        if (data.till_number) {
+          document.getElementById("till-number").textContent = data.till_number;
+        } else {
+          document.getElementById("till-number").textContent = "3566188"; // Fallback
+        }
+      } catch (error) {
+        console.error("Error fetching till number:", error);
+        // Fallback to default till number
+        document.getElementById("till-number").textContent = "3566188";
+        showModal("Failed to load till number. Using default.");
+      }
+    }
+
+    // Call this when page loads
+    document.addEventListener('DOMContentLoaded', fetchTillNumber);
+
+    function copyTill() {
+      const till = document.getElementById("till-number").textContent;
+      if (till === "Loading...") {
+        showModal("Please wait while we load the till number");
+        return;
+      }
+      
+      navigator.clipboard.writeText(till).then(() => {
+        showModal("Till number copied to clipboard!");
+      }).catch(err => {
+        showModal("Failed to copy: " + err);
+      });
+    }
+
+    function pasteMpesaMessage() {
+      navigator.clipboard.readText().then(text => {
+        document.getElementById("mpesa-msg").value = text;
+      }).catch(err => {
+        showModal("Failed to paste: " + err);
+      });
+    }
+
+    function validatePayment() {
+      const mpesaMessage = document.getElementById("mpesa-msg").value;
+      
+      // Check if the message contains "Ksh250.00 paid to ANJAO TECHNOLOGIES" (case insensitive)
+      if (mpesaMessage.toLowerCase().includes("ksh250.00 paid to anjao technologies")) {
+        // Successful payment - in a real scenario, you would redirect to a success page
+        showModal("Payment validated successfully! Redirecting...");
+        
+        // Simulate redirect after 2 seconds
+        setTimeout(() => {
+          // Replace this with your actual success page URL
+          window.location.href = "report.php";
+        }, 2000);
+      } else {
+        // Failed validation
+        showModal("Invalid M-PESA message. Please ensure you've pasted the correct message.");
+      }
+    }
+
+    function showModal(message) {
+      document.getElementById("modalMessage").textContent = message;
+      document.getElementById("messageModal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("messageModal").style.display = "none";
+    }
+  </script>
+</body>
+</html>

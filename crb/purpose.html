@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report Purpose</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background-color: #f9f9f9;
+    }
+    .header {
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+    }
+    .progress {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .progress div {
+      margin: 0 10px;
+      font-weight: bold;
+    }
+    .progress .active {
+      color: #4CAF50;
+    }
+    .progress .current {
+      color: #3f51b5;
+    }
+    .container {
+      padding: 20px;
+    }
+    .question {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .instruction {
+      color: #555;
+      margin-bottom: 20px;
+    }
+    .option {
+      background: white;
+      border: 2px solid #eee;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .option:hover {
+      border-color: #3f51b5;
+    }
+    .option.selected {
+      border-color: #3f51b5;
+      background-color: #eef2ff;
+    }
+    .icon {
+      font-size: 24px;
+      margin-right: 15px;
+    }
+    .option-text {
+      display: flex;
+      flex-direction: column;
+    }
+    .option-text .title {
+      font-weight: bold;
+    }
+    .option-text .subtitle {
+      color: #777;
+      font-size: 14px;
+    }
+    .circled-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: #3f51b5;
+      color: white;
+      font-weight: bold;
+      margin-right: 8px;
+    }
+    .dashed-line {
+      border-top: 2px dashed #ccc;
+      margin: 20px 0;
+    }
+    .important-info {
+      background-color: #fff8e1;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border-left: 4px solid #ffc107;
+    }
+    .footer-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+    .back-button {
+      background: none;
+      border: none;
+      color: #3f51b5;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 10px 15px;
+    }
+    .submit-button {
+      background-color: #3f51b5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 25px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    /* Progress Dialog Styles */
+    .progress-dialog {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.9);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .progress-dialog h2 {
+      color: #3f51b5;
+      margin-bottom: 30px;
+    }
+    .progress-bar {
+      width: 80%;
+      max-width: 400px;
+      height: 20px;
+      background-color: #e0e0e0;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .progress-text {
+      font-size: 18px;
+      color: #555;
+      margin-bottom: 10px;
+    }
+    .progress-percent {
+      font-size: 24px;
+      font-weight: bold;
+      color: #3f51b5;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h2>Report Purpose</h2>
+    <p>Please select the primary reason you need your CRB report. This helps us provide you with the most appropriate documentation for your specific needs.</p>
+  </div>
+
+  <div class="dashed-line"></div>
+
+  <div class="progress">
+    <div class="active"><span class="circled-number">1</span> Registration</div>
+    <div class="current"><span class="circled-number">2</span> Purpose</div>
+    <div><span class="circled-number">3</span> Report</div>
+  </div>
+
+  <div class="dashed-line"></div>
+
+  <div class="container">
+    <div class="question">Why do you need your CRE report?</div>
+    <div class="instruction">Select the option that best describes your reason for requesting a CRB report.</div>
+
+    <div class="option">
+      <div class="icon">🏦</div>
+      <div class="option-text">
+        <div class="title">Loan Application</div>
+        <div class="subtitle">Examples: Bank loans, Business Loans</div>
+      </div>
+    </div>
+
+    <div class="option">
+      <div class="icon">💼</div>
+      <div class="option-text">
+        <div class="title">Employment</div>
+        <div class="subtitle">Examples: Banking jobs, government positions, security roles</div>
+      </div>
+    </div>
+
+    <div class="option">
+      <div class="icon">🏢</div>
+      <div class="option-text">
+        <div class="title">Business Registration</div>
+        <div class="subtitle">Examples: Business licenses, tenders, supplier registration</div>
+      </div>
+    </div>
+
+    <div class="option">
+      <div class="icon">🏠</div>
+      <div class="option-text">
+        <div class="title">Property Rental</div>
+        <div class="subtitle">Examples: House rental, office space, commercial property</div>
+      </div>
+    </div>
+
+    <div class="option">
+      <div class="icon">🆔</div>
+      <div class="option-text">
+        <div class="title">Personal Verification</div>
+        <div class="subtitle">Examples: Credit monitoring, identity verification</div>
+      </div>
+    </div>
+
+    <div class="option">
+      <div class="icon">✈️</div>
+      <div class="option-text">
+        <div class="title">Visa/Travel</div>
+        <div class="subtitle">Examples: Schengen visa, work permits, immigration</div>
+      </div>
+    </div>
+
+    <div class="option">
+      <div class="icon">❓</div>
+      <div class="option-text">
+        <div class="title">Other Purpose</div>
+        <div class="subtitle">Any other legitimate reason not listed above</div>
+      </div>
+    </div>
+
+    <div class="important-info">
+      <strong>Important Information</strong><br>
+      Your CRB report contains sensitive financial information from all three licensed CRBs in Kenya: CreditInfo CRB, Metropol CRB, and TransUnion Kenya CRB.
+    </div>
+
+    <div class="footer-buttons">
+      <button class="back-button">← Back to Registration</button>
+      <button class="submit-button" id="submitBtn">Submit</button>
+    </div>
+  </div>
+
+  <!-- Progress Dialog -->
+  <div class="progress-dialog" id="progressDialog">
+    <h2>Processing Your Request</h2>
+    <div class="progress-percent" id="progressPercent">0%</div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-text" id="progressText">Preparing your application...</div>
+  </div>
+
+  <script>
+    // Option selection
+    const options = document.querySelectorAll('.option');
+    options.forEach(option => {
+      option.addEventListener('click', () => {
+        options.forEach(opt => opt.classList.remove('selected'));
+        option.classList.add('selected');
+      });
+    });
+
+    // Submit button functionality
+    const submitBtn = document.getElementById('submitBtn');
+    const progressDialog = document.getElementById('progressDialog');
+    const progressFill = document.getElementById('progressFill');
+    const progressPercent = document.getElementById('progressPercent');
+    const progressText = document.getElementById('progressText');
+
+    submitBtn.addEventListener('click', () => {
+      // Show progress dialog
+      progressDialog.style.display = 'flex';
+      
+      // Simulate progress
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 10;
+        if (progress > 100) progress = 100;
+        
+        progressFill.style.width = `${progress}%`;
+        progressPercent.textContent = `${Math.floor(progress)}%`;
+        
+        // Update progress text
+        if (progress < 30) {
+          progressText.textContent = "Preparing your application...";
+        } else if (progress < 60) {
+          progressText.textContent = "Fetching credit information...";
+        } else if (progress < 90) {
+          progressText.textContent = "Verifying your details...";
+        } else {
+          progressText.textContent = "Finalizing your report...";
+        }
+        
+        // When complete
+        if (progress === 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            // Redirect to next page (replace with actual next page URL)
+           // window.location.href = "toreport.html";
+		    window.location.href = "pricing.php";
+          }, 1000);
+        }
+      }, 300);
+    });
+
+    // Back button functionality
+    document.querySelector('.back-button').addEventListener('click', () => {
+      window.location.href = "index.php";
+    });
+  </script>
+</body>
+</html>

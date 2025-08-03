@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M-PESA Payment</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      background: #fff;
+      width: 95%;
+      max-width: 350px;
+      margin: 20px auto;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 100%;
+      background-color: #e0e0e0;
+    }
+
+    .progress-line::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 50%;
+      background-color: #007bff;
+      animation: progress-animation 2s ease-in-out infinite;
+    }
+
+    @keyframes progress-animation {
+      0% {
+        left: -50%;
+        width: 50%;
+      }
+      100% {
+        left: 100%;
+        width: 50%;
+      }
+    }
+
+    .title {
+      font-size: clamp(18px, 5vw, 20px);
+      font-weight: bold;
+      color: #d17500;
+      margin-top: 5px;
+    }
+
+    .premium {
+      font-size: clamp(12px, 4vw, 14px);
+      color: #d17500;
+    }
+
+    .steps {
+      margin-top: 15px;
+    }
+
+    .step {
+      margin: 12px 0;
+      font-size: clamp(14px, 4vw, 16px);
+    }
+
+    .step span {
+      font-weight: bold;
+      color: #ff9900;
+      margin-right: 8px;
+      font-size: clamp(16px, 5vw, 18px);
+    }
+
+    .till-box-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .till-box {
+      background-color: #f7f7f7;
+      padding: 12px;
+      border-radius: 5px;
+      font-weight: bold;
+      flex-grow: 1;
+    }
+
+    .copy-btn {
+      background-color: #eee;
+      border: none;
+      padding: 10px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      min-width: 44px;
+      min-height: 44px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 90px;
+      margin-top: 10px;
+      padding: 12px;
+      font-size: 14px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      resize: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .button {
+      background-color: #fdbd42;
+      color: white;
+      border: none;
+      padding: 14px;
+      width: 100%;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 10px;
+      margin-top: 15px;
+      cursor: pointer;
+      min-height: 48px;
+    }
+
+    .paste-btn {
+      background-color: #d9d9d9;
+      border: none;
+      padding: 12px;
+      border-radius: 5px;
+      margin-top: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100%;
+      min-height: 44px;
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      touch-action: manipulation;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 300px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
+
+    .modal-button {
+      background-color: #fdbd42;
+      color: white;
+      border: none;
+      padding: 12px;
+      margin-top: 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+      min-height: 44px;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(0,0,0,0.1);
+      border-radius: 50%;
+      border-top-color: #d17500;
+      animation: spin 1s ease-in-out infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="progress-line"></div>
+    <div class="title">Pay KES 150.00 <span class="premium">(Standard)</span></div>
+    <div class="steps">
+      <div class="step"><span>①</span>Go to M-PESA</div>
+      <div class="step"><span>②</span>Select "Lipa na M-PESA" > "Buy Goods"</div>
+      <div class="step"><span>③</span>Enter Till 
+        <div class="till-box-container">
+          <div id="till-number" class="till-box"><span class="loading-spinner"></span> Loading...</div>
+          <button class="copy-btn" onclick="copyTill()">📋</button>
+        </div>
+      </div>
+      <div class="step"><span>④</span>Enter Amount: KES 150.00</div>
+      <div class="step"><span>⑤</span>Enter PIN & Confirm</div>
+    </div>
+    <label for="mpesa-msg" style="margin-top:15px;display:block;font-weight:bold;">Paste M-PESA Message</label>
+    <textarea id="mpesa-msg" placeholder="Paste your M-PESA message here..."></textarea>
+    <button class="paste-btn" onclick="pasteMpesaMessage()">Paste from Clipboard</button>
+    <button class="button" onclick="validatePayment()">Validate Payment</button>
+  </div>
+
+  <!-- Modal for showing messages -->
+  <div id="messageModal" class="modal">
+    <div class="modal-content">
+      <p id="modalMessage"></p>
+      <button class="modal-button" onclick="closeModal()">OK</button>
+    </div>
+  </div>
+
+  <script>
+    // Configuration
+    const CONFIG = {
+      DEFAULT_TILL: "4158516",
+      PAYMENT_AMOUNT: "150.00",
+      VALIDATION_KEYWORD: "ksh150.00 paid to anjao technologies",
+      REDIRECT_URL: "report.php",
+      API_ENDPOINT: "get_till.php"
+    };
+
+    // DOM Elements
+    const elements = {
+      tillNumber: document.getElementById("till-number"),
+      mpesaMsg: document.getElementById("mpesa-msg"),
+      modalMessage: document.getElementById("modalMessage"),
+      messageModal: document.getElementById("messageModal")
+    };
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchTillNumber();
+      enhanceTouchSupport();
+    });
+
+    // Fetch the current till number from server
+    async function fetchTillNumber() {
+      try {
+        showLoadingState();
+        
+        const response = await fetch(CONFIG.API_ENDPOINT);
+        
+        if (!response.ok) {
+          throw new Error(`Server responded with status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.error) {
+          throw new Error(data.error);
+        }
+        
+        if (data.till_number) {
+          displayTillNumber(data.till_number);
+        } else {
+          throw new Error("No till number in response");
+        }
+      } catch (error) {
+        console.error("Till number fetch error:", error);
+        useFallbackTillNumber(error.message);
+      }
+    }
+
+    function showLoadingState() {
+      elements.tillNumber.innerHTML = '<span class="loading-spinner"></span> Loading...';
+    }
+
+    function displayTillNumber(number) {
+      elements.tillNumber.textContent = number;
+    }
+
+    function useFallbackTillNumber(errorMessage) {
+      elements.tillNumber.textContent = CONFIG.DEFAULT_TILL;
+      showModal(`System note: ${errorMessage}. Using default till number.`);
+    }
+
+    function copyTill() {
+      const till = elements.tillNumber.textContent;
+      
+      if (till.includes("Loading")) {
+        showModal("Please wait while we load the till number");
+        return;
+      }
+      
+      navigator.clipboard.writeText(till).then(() => {
+        showModal("Till number copied to clipboard!");
+      }).catch(err => {
+        showModal("Failed to copy: " + err.message);
+      });
+    }
+
+    function pasteMpesaMessage() {
+      navigator.clipboard.readText().then(text => {
+        elements.mpesaMsg.value = text;
+      }).catch(err => {
+        showModal("Failed to paste: " + err.message);
+      });
+    }
+
+    function validatePayment() {
+      const mpesaMessage = elements.mpesaMsg.value.trim();
+      
+      if (!mpesaMessage) {
+        showModal("Please paste your M-PESA message first");
+        return;
+      }
+      
+      if (mpesaMessage.toLowerCase().includes(CONFIG.VALIDATION_KEYWORD)) {
+        showModal("Payment validated successfully! Redirecting...");
+        setTimeout(() => {
+          window.location.href = CONFIG.REDIRECT_URL;
+        }, 2000);
+      } else {
+        showModal("Invalid M-PESA message. Please ensure you've pasted the correct message.");
+      }
+    }
+
+    function showModal(message) {
+      elements.modalMessage.textContent = message;
+      elements.messageModal.style.display = "flex";
+    }
+
+    function closeModal() {
+      elements.messageModal.style.display = "none";
+    }
+
+    function enhanceTouchSupport() {
+      document.querySelectorAll('button').forEach(btn => {
+        btn.style.touchAction = 'manipulation';
+      });
+    }
+  </script>
+</body>
+</html>
